@@ -3,7 +3,9 @@ package ecomerce.core.user;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+import ecommerce.core.user.UserApplication;
+
+@SpringBootTest(classes = UserApplication.class)
 class UserApplicationTests {
 
 	@Test
