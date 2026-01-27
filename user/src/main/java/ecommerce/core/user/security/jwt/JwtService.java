@@ -30,6 +30,17 @@ public class JwtService {
 				
 	}
 	
+	public String generateTokenOauth2(String username) {
+		SecretKey key = getSignInKey();
+		Date currentDate = new Date();
+        Date expireDate = new Date(currentDate.getTime() + expirationTime);
+        return Jwts.builder().subject(username)
+        		.issuedAt(new Date(System.currentTimeMillis()))
+				.expiration(expireDate)
+				.signWith(key)
+				.compact();
+	}
+	
 	public String getUsernameFromToken(String token) {
 		return extractAllClaims(token).getSubject();
 	}
