@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import ecommerce.core.user.dto.ErrorResponse;
+import ecommerce.core.user.exception.CantCreateDataException;
 import ecommerce.core.user.exception.EmailAlreadyExistsException;
 import ecommerce.core.user.exception.InvalidCredentialsException;
 import ecommerce.core.user.exception.UserNotFoundException;
@@ -32,5 +33,10 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(errorResponse);
 	}
 	
+	@ExceptionHandler(CantCreateDataException.class)
+	public ResponseEntity<ErrorResponse> handleCantCreateData(CantCreateDataException cantCreateDataException, HttpServletRequest request){
+		ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.BAD_REQUEST.value(), "Please contact to admin", cantCreateDataException.getMessage(), request.getRequestURI());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+	}
 
 }

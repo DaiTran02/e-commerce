@@ -6,6 +6,5 @@ import lombok.Data;
 public class ChannelCreateDto {
 	private String nameChannel;
 	private String avatar;
-	
-	
+	private String userId;
 }

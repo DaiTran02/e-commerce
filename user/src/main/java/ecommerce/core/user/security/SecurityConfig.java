@@ -16,8 +16,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import ecommerce.core.user.security.jwt.JwtAuthenticationFilter;
 import ecommerce.core.user.security.oauth2.Oauth2SuccessHandler;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 
+@SecurityScheme(type = SecuritySchemeType.HTTP,name = "bearerAuth",scheme="bearer",bearerFormat = "JWT", in = SecuritySchemeIn.HEADER)
 @Configuration
 @EnableWebSecurity
 @AllArgsConstructor
@@ -36,8 +41,14 @@ public class SecurityConfig {
 					.requestMatchers("/public/**").permitAll()
 					.requestMatchers("/admin/**").hasRole("ADMIN")
 					.anyRequest().authenticated())
-					.oauth2Login(oauth->oauth.successHandler(oauth2SuccessHandler))
 					.sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+					.exceptionHandling(ex->ex.authenticationEntryPoint((request, response, autheException)->{
+						response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+					}))
+			
+			
+					.oauth2Login(oauth->oauth.successHandler(oauth2SuccessHandler))
+					
 					.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 		return http.build();
 		}

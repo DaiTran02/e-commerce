@@ -6,6 +6,7 @@ import lombok.Data;
 
 @Data
 public class ChannelResponseDto {
+	private String id;
 	private String nameChannel;
 	private String avatar;
 	private Date createTime;

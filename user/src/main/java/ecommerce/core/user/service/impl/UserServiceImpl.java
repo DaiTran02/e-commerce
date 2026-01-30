@@ -1,14 +1,19 @@
 package ecommerce.core.user.service.impl;
 
 import java.util.Date;
+import java.util.List;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import ecommerce.core.user.common.AbstractCrudService;
 import ecommerce.core.user.dto.UserCreateDto;
+import ecommerce.core.user.dto.UserFilterDto;
 import ecommerce.core.user.dto.UserResponseDto;
+import ecommerce.core.user.entity.Channel;
 import ecommerce.core.user.entity.User;
 import ecommerce.core.user.mapper.UserMapper;
 import ecommerce.core.user.repository.UserRepository;
@@ -39,6 +44,21 @@ public class UserServiceImpl extends AbstractCrudService<User, Long> implements 
 		User create = create(user);
 		return userMapper.toDto(create);
 	}
-	
+
+
+
+	@Override
+	public User updateChannelOfUser(Long id, List<Channel> listChannels) {
+		User user = getById(id);
+		user.setChannels(listChannels);
+		return update(user);
+	}
+
+
+	@Override
+	public List<UserResponseDto> getListUsers(UserFilterDto userFilterDto) {
+		Pageable pageable = PageRequest.of(userFilterDto.getPage(), userFilterDto.getSize());
+		return userMapper.entityToListDto(getAll(pageable));
+	}
 
 }
