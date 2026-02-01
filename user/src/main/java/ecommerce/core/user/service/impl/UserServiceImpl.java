@@ -50,7 +50,8 @@ public class UserServiceImpl extends AbstractCrudService<User, Long> implements 
 	@Override
 	public User updateChannelOfUser(Long id, List<Channel> listChannels) {
 		User user = getById(id);
-		user.setChannels(listChannels);
+		user.getChannels().clear();
+		user.getChannels().addAll(listChannels);
 		return update(user);
 	}
 
@@ -59,6 +60,12 @@ public class UserServiceImpl extends AbstractCrudService<User, Long> implements 
 	public List<UserResponseDto> getListUsers(UserFilterDto userFilterDto) {
 		Pageable pageable = PageRequest.of(userFilterDto.getPage(), userFilterDto.getSize());
 		return userMapper.entityToListDto(getAll(pageable));
+	}
+
+
+	@Override
+	public User getUserById(Long id) {
+		return getById(id);
 	}
 
 }

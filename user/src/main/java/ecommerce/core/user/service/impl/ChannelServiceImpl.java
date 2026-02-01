@@ -11,11 +11,13 @@ import ecommerce.core.user.common.AbstractCrudService;
 import ecommerce.core.user.dto.ChannelCreateDto;
 import ecommerce.core.user.dto.ChannelResponseDto;
 import ecommerce.core.user.entity.Channel;
+import ecommerce.core.user.entity.User;
 import ecommerce.core.user.exception.CantCreateDataException;
 import ecommerce.core.user.mapper.ChannelMapper;
 import ecommerce.core.user.repository.ChannelRepository;
 import ecommerce.core.user.service.ChannelService;
 import ecommerce.core.user.service.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -31,17 +33,22 @@ public class ChannelServiceImpl extends AbstractCrudService<Channel, Long> imple
 	}
 
 	@Override
+	@Transactional
 	public ChannelResponseDto createChannel(ChannelCreateDto channelCreateDto) {
 		try {
 			Channel channel = channelMapper.createToEntity(channelCreateDto);
+			
 			channel.setCreateTime(new Date());
+			
+			User user = userService.getUserById(channelCreateDto.getUserId());
+			channel.setUser(user);
 			
 			Channel channelCreate = create(channel);
 			
 			List<Channel> listChannels = new ArrayList<Channel>();
 			listChannels.add(channelCreate);
 			
-			userService.updateChannelOfUser(channelCreate.getId(), listChannels);
+			userService.updateChannelOfUser(channelCreateDto.getUserId(), listChannels);
 			
 			ChannelResponseDto channelResponseDto = channelMapper.entityToResponse(channelCreate);
 			return channelResponseDto;

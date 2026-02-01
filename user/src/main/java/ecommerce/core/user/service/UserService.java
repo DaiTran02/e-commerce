@@ -12,4 +12,5 @@ public interface UserService {
 	UserResponseDto createUser(UserCreateDto userCreateDto);
 	User updateChannelOfUser(Long id, List<Channel> listChannels);
 	List<UserResponseDto> getListUsers(UserFilterDto userFilterDto);
+	User getUserById(Long id);
 }
